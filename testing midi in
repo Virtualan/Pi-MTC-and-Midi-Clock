@@ -1,0 +1,12 @@
+import time
+from mtc import *
+from random import randint
+
+ser=mtc()
+
+
+
+while True:
+    n= ser.get_mtc()
+    if n[0:3] == "0x4":
+        print n
