@@ -1,0 +1,24 @@
+from korgnanocontrol import *
+import time
+from serialmidi import *  
+kmidi=korgnanocontrol()
+sm = serialmidi()
+
+for n in range (1,16):
+    sm.send_message("cc",n,123,0) # all notes off   
+    sm.send_message("cc",n,121,0) # reset controls   
+    sm.send_message(12,n,1)  
+
+for n in range (31,70):
+    time.sleep(0.01)
+    kmidi.send_data(0xB0,n,1)
+
+for n in range (70,31,-1):
+    time.sleep(0.01)
+    kmidi.send_data(0xB0,n,0)
+
+#GS reset for Boss DR-330
+sm.send_message("gsr",1,0,0)   
+sm.send_message(12,10,0) #standard kit 
+
+kmidi.close()    
