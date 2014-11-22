@@ -1,0 +1,39 @@
+import pygame
+import pygame.midi
+import pygame.fastevent
+from pygame.locals import *
+from serialmidi import *   
+import time
+import sys
+pygame.init()
+pygame.fastevent.init()
+pygame.midi.init()
+
+
+class korgnanocontrol:
+    
+    def __init__(self):
+        # these ports are specific to my system
+        self.midi_in = pygame.midi.Input(3)
+        self.midi_out = pygame.midi.Output(2, 0)
+
+    def read_data(self):   
+        if self.midi_in.poll():
+            # MIDI has been detected
+            self.midi_events = self.midi_in.read(100) 
+            
+            # Get the last event received (event type, value)
+            self.data1 = self.midi_events [-1][0][1]   
+            self.data2 = self.midi_events [-1][0][2]
+            self.midi_out.write_short(0xB0,self.data1,self.data2)
+            return self.data1,self.data2
+        else:
+            return 0,0
+    
+    def send_data(self,type,data1,data2):
+            self.midi_out.write_short(type,data1,data2)
+            
+    def close(self):
+        del self.midi_in
+        del self.midi_out
+        pygame.midi.quit()
