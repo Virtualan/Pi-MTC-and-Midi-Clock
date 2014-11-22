@@ -1,0 +1,24 @@
+import serial
+import os
+import time
+from time import strftime
+
+class serialmidi:
+    
+    def __init__(self):
+        self.ser=serial.Serial('/dev/ttyAMA0',38400)		# Set up the UART  
+           
+    def send_message(self,type,channel=1,val1=0,val2=0):
+        if type == 8 : midimessage = chr(0x80 + (channel - 1)) + chr(val1) + chr(val2)     # note off
+        if type == 9 : midimessage = chr(0x90 + (channel - 1)) + chr(val1) + chr(val2)     # note on
+        if type == "cc": midimessage = chr(0xB0 + (channel - 1)) + chr(val1) + chr(val2)   # control
+        if type == 12 : midimessage = chr(0xC0 + (channel - 1)) + chr(val1)                # prog change
+        if type == 14 : midimessage = chr(0xE0 + (channel - 1)) + chr(val1) + chr(val2)    # bend
+        if type =="gsr":
+            midimessage = chr(0xF0 + (channel - 1))+chr(0x41)+chr(0x10)+chr(0x42)+chr(0x12)  /
+            +chr(0x40)+chr(0x00)+chr(0x7F)+chr(0x00)+chr(0x41)+chr(0xF7)
+            
+        self.ser.write(midimessage)
+    
+    
+            
